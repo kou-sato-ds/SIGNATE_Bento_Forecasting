@@ -1,0 +1,33 @@
+# --- Data (最重要：データそのものは上げない) ---
+data/
+*.csv
+*.tsv
+*.json
+*.parquet
+*.db
+*.sqlite
+
+# --- Python / Jupyter ---
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+build/
+dist/
+*.egg-info/
+
+# --- IDE / OS (個人の環境設定) ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Terraform (もし同じリポジトリにある場合) ---
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+.terraform.lock.hcl
