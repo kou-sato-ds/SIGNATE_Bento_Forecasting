@@ -47,4 +47,39 @@ class BentoForecaster:
             self.model.fit(X_train, y_train)
             preds = self.model.predict(X_val)
             rmse = np.sqrt(mean_squared_error(y_val, preds))
-            scores.append(
+            scores.append(rmse)
+            logger.info(f"Fold {fold+1}: RMSE = {rmse:.4f}")
+            
+        logger.info(f"Average RMSE: {np.mean(scores):.4f}")
+
+# --- 5. Execution & Submission Flow ---
+if __name__ == "__main__":
+    # データの読み込み
+    train = pd.read_csv('data/train.csv')
+    test = pd.read_csv('data/test.csv')
+    sample_sub = pd.read_csv('data/sample_submission.csv', header=None)
+
+    forecaster = BentoForecaster()
+
+    # 前処理
+    train_df = forecaster.prepare_data(train)
+    test_df = forecaster.prepare_data(test)
+
+    # 目的変数と特徴量の分離
+    y_train = train_df['y']
+    X_train_raw = train_df.drop('y', axis=1)
+    X_test_raw = test_df
+
+    # 次元保証
+    X_train, X_test = forecaster.align_features(X_train_raw, X_test_raw)
+
+    # 評価
+    forecaster.train_and_evaluate(X_train, y_train)
+
+    # 最終学習と提出用ファイル作成
+    forecaster.model.fit(X_train, y_train)
+    final_preds = forecaster.model.predict(X_test)
+
+    sample_sub[1] = final_preds
+    sample_sub.to_csv('data/submission_master.csv', index=False, header=None)
+    logger.info("Submission file created successfully!")
