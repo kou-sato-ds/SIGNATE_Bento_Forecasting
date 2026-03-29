@@ -77,7 +77,7 @@ class BentoForecaster:
         
         target = 'y'
         if target not in train_df.columns:
-            logger.error("Target column 'y" not found.")
+            logger.error("Target column 'y' not found.")
             return
 
         X = train_df.drop([target], axis=1)

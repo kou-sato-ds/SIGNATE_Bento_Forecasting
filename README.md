@@ -1,6 +1,7 @@
-```markdown
-![Python CI](https://github.com/kou-sato-ds/SIGNATE_Bento_Forecasting/actions/workflows/python-ci.yml/badge.svg)
 
+```mermaid
+
+![Python CI](https://github.com/kou-sato-ds/SIGNATE_Bento_Forecasting/actions/workflows/python-ci.yml/badge.svg)
 # 🍱 SIGNATE Bento Demand Forecasting (Master Model Implementation)
 
 お弁当の需要予測において、単なるスコアアップではなく、**「実務に耐えうる堅牢な機械学習パイプライン」**と**「保守性の高いクラス設計」**を追求したプロジェクトです。
@@ -9,7 +10,6 @@
 
 ## 📊 処理フロー：黄金のフローによるカプセル化
 
-```mermaid
 graph TD
     subgraph "BentoForecaster Class"
         A[<b>Import & Config</b>] --> B[<b>Read Data</b>]
@@ -43,36 +43,21 @@ graph TD
 ---
 
 ## 📂 プロジェクト構造 (Directory Structure)
-（既存の内容を継承）
+
+```text
+.
+├── .github/workflows/ # GitHub Actions (Python CI)
+├── src/               # 予測モデル実装 (BentoForecasterクラス)
+├── data/              # 訓練・テストデータ
+└── requirements.txt   # 依存ライブラリ
 ```
 
 ---
 
-### 🚀 次のアクション：Python CI の導入
+## 🎖️ About Me
 
-このリポジトリには、Pythonのコード品質を保つための Actions を追加しましょう。
+**Kou Sato (Moheji)**
+データエンジニア / データサイエンティスト
+「技術をビジネスの価値に変換する」をモットーに、IaCからMLモデル構築まで一貫したデリバリーを追求しています。
 
-1.  `.github/workflows/python-ci.yml` を作成。
-2.  以下のコードを貼り付け。
-
-```yaml
-name: 'Python CI'
-
-on:
-  push:
-    branches: [ "main" ]
-
-jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-    - name: Install dependencies
-      run: pip install flake8
-    - name: Lint with flake8
-      run: flake8 src/ --count --select=E9,F63,F7,F82 --show-source --statistics
 ```
