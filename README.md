@@ -1,66 +1,78 @@
-# SIGNATE Bento Demand Forecasting (Master Model Implementation)
+```markdown
+![Python CI](https://github.com/kou-sato-ds/SIGNATE_Bento_Forecasting/actions/workflows/python-ci.yml/badge.svg)
 
-2026年11月の社内外の転身を見据えた、お弁当需要予測プロジェクトです。
-単なるスコアアップを目的とせず、実務に耐えうる**「堅牢な機械学習パイプライン」**と**「保守性の高いコード設計」**の構築を主眼に置いています。
+# 🍱 SIGNATE Bento Demand Forecasting (Master Model Implementation)
 
-## 📌 プロジェクトの背景
-私はIT企業の事務職として働く傍ら、2025年8月の「マナビDXクエスト」をきっかけにAIエンジニアへの道を決意しました。
-12月から開始した連続学習の中で、かつて経験した「スコア0.5（ランダム予測）」というサイレント・バグの絶望を乗り越え、現在は**「データの整合性と再現性を保証する実装」**を信条としています。
-
-## 📂 ディレクトリ構成 (Directory Structure)
-```text
-.
-├── src/                # 実装コード (bento_3.py ~ bento_10.py)
-│   └── main.py         # 最終的な予測パイプライン
-├── data/               # (Git管理対象外) 学習用・予測用CSVデータ
-├── docs/               # プロジェクト資料・実行結果
-│   └── images/         # スコア証明および可視化グラフ
-├── notebooks/          # 探索的データ分析 (EDA)
-├── .gitignore          # セキュリティ設定 (Data/Terraform関連)
-└── README.md           # 本ドキュメント
-
-```
-
-## 🏆 達成実績
-
-* **平均交差検証誤差 (Average CV RMSE)**: **11.2777**
-* **SIGNATE 暫定スコア**: **9.6301** (RMSE)
-
-*図：ハイブリッドモデルによるRMSE 11.27の達成とSIGNATEへの投稿完了証明*
-
-## 💡 実装のこだわり（Master型設計）
-
-### 1. 黄金のフローによるカプセル化
-
-`BentoForecaster`クラスを定義し、`import -> read -> features -> K-fold -> submit` の流れをメソッド化。誰がどこから動かしても同じ結果が得られる「職人芸に頼らない」設計です。
-
-### 2. 聖域の1行：`X.align` による次元保証
-
-訓練データとテストデータの列のズレを完封するため、学習直前に必ず `X.align` を実行。カテゴリ変数の数値化過程で生じる予期せぬ次元不一致を自動で修正し、モデルの堅牢性を確保しています。
-
-### 3. ハイブリッド予測戦略
-
-* **Linear Regression**: 長期的な売上の減少トレンドをキャプチャ。
-* **Random Forest / LightGBM**: 天候や「お楽しみメニュー」などの非線形な要因（残差）を学習。
-* **データフィルタリング**: トレンドが変化した2014年5月以降のデータに特化して学習。
-
-## 🛠 使用技術
-
-* **Language**: Python 3.10+
-* **Library**: Pandas, Scikit-learn, LightGBM
-* **Validation**: K-Fold Cross Validation (5-folds)
-* **Infrastructure**: Terraform (AWS S3 Data Lake)
-
-## 🔄 モデル改善の試行錯誤 (A/B Testing)
-
-| モデル名 | 手法・特徴量 | スコア (RMSE) | 考察 |
-| --- | --- | --- | --- |
-| **bento_3 (Best)** | **Linear Trend + RF 残差学習** | **11.27** | **トレンドと日次変動を分けたのが正解。** |
-| bento_5 | GBDT + メニュー名特徴量 | 14.20 | データ件数が少ないため過学習が発生。 |
+お弁当の需要予測において、単なるスコアアップではなく、**「実務に耐えうる堅牢な機械学習パイプライン」**と**「保守性の高いクラス設計」**を追求したプロジェクトです。
 
 ---
 
-### 🔗 関連リンク
+## 📊 処理フロー：黄金のフローによるカプセル化
 
-* [Qiita: モデルを疑う前に「データの形」を疑え。Kaggleスコア0.5の絶望を救った「聖域の1行」](https://qiita.com/yoshirin1989k/items/589fb64ffd970c88faea)
-* [GitHub: AWS_IaC_Terraform](https://github.com/kou-sato-ds/AWS_IaC_Terraform)
+```mermaid
+graph TD
+    subgraph "BentoForecaster Class"
+        A[<b>Import & Config</b>] --> B[<b>Read Data</b>]
+        B --> C[<b>X.align: 次元保証</b>]
+        C --> D[<b>Feature Engineering</b>]
+        D --> E[<b>5-fold Stratified K-Fold</b>]
+        E --> F[<b>Hybrid Modeling</b>]
+    end
+
+    subgraph "Hybrid Strategy"
+        F --> G[Linear Regression: <i>Long-term Trend</i>]
+        F --> H[LightGBM/RF: <i>Residual Learning</i>]
+        G & H --> I[<b>Final Ensemble Prediction</b>]
+    end
+
+    style C fill:#e74c3c,stroke:#fff,color:#fff
+    style I fill:#f1c40f,stroke:#333,color:#333
+```
+
+---
+
+## 🛠️ 実装のこだわり (Master型設計)
+
+### 1. 聖域の1行：`X.align` による次元保証
+- **Why**: 実務で最も恐ろしい「訓練時と推論時の特徴量ズレ（Data Drift/Schema Mismatch）」を未然に防ぎ、モデルの堅牢性を絶対的なものにするためです。
+
+### 2. ハイブリッド予測戦略
+- **Action**: 線形モデルで長期トレンドを、木モデルで「お楽しみメニュー」等の非線形要素（残差）を学習。
+- **Why**: 弁当需要のような季節性と突発イベントが混在するデータに対し、単一モデルよりも解釈性と精度のバランスに優れた予測を可能にします。
+
+---
+
+## 📂 プロジェクト構造 (Directory Structure)
+（既存の内容を継承）
+```
+
+---
+
+### 🚀 次のアクション：Python CI の導入
+
+このリポジトリには、Pythonのコード品質を保つための Actions を追加しましょう。
+
+1.  `.github/workflows/python-ci.yml` を作成。
+2.  以下のコードを貼り付け。
+
+```yaml
+name: 'Python CI'
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: pip install flake8
+    - name: Lint with flake8
+      run: flake8 src/ --count --select=E9,F63,F7,F82 --show-source --statistics
+```
