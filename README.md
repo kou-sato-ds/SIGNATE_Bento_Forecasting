@@ -26,7 +26,7 @@ graph TD
 
     style C fill:#e74c3c,stroke:#fff,color:#fff
     style I fill:#f1c40f,stroke:#333,color:#333
-    
+
 ```
 
 ---
@@ -59,4 +59,3 @@ graph TD
 **Kou Sato (Moheji)**
 データエンジニア / データサイエンティスト
 「技術をビジネスの価値に変換する」をモットーに、IaCからMLモデル構築まで一貫したデリバリーを追求しています。
-```
