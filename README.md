@@ -1,7 +1,7 @@
+![Python CI](https://github.com/kou-sato-ds/SIGNATE_Bento_Forecasting/actions/workflows/python-ci.yml/badge.svg)
 
 ```mermaid
 
-![Python CI](https://github.com/kou-sato-ds/SIGNATE_Bento_Forecasting/actions/workflows/python-ci.yml/badge.svg)
 # 🍱 SIGNATE Bento Demand Forecasting (Master Model Implementation)
 
 お弁当の需要予測において、単なるスコアアップではなく、**「実務に耐えうる堅牢な機械学習パイプライン」**と**「保守性の高いクラス設計」**を追求したプロジェクトです。
